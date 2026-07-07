@@ -162,22 +162,26 @@
       background: white;
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 1.25rem;
+      padding: 0.75rem 0.75rem 0.9rem;
       margin: 1.5rem 0;
       text-align: center;
     }
     .figure-panel img {
       max-width: 100%;
-      border-radius: 6px;
+      display: block;
+      margin: 0 auto;
+      border-radius: 4px;
     }
     .figure-panel figcaption {
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       color: var(--muted);
-      margin-top: 0.75rem;
+      margin-top: 0.55rem;
       line-height: 1.5;
       text-align: left;
     }
     .figure-panel figcaption strong { color: var(--text); }
+    /* Method overview: constrain width so it reads as a centered illustration */
+    .figure-panel.overview img { max-width: 88%; }
 
     /* two-column figures */
     .fig-row {
@@ -490,12 +494,19 @@
       </svg>
       Code
     </a>
-    <a class="btn btn-secondary" href="poster_main.pdf" target="_blank">
+    <a class="btn btn-secondary" href="assets/_ICML_2026__A_LQR_Poster.pdf" target="_blank">
       <!-- poster icon -->
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>
       </svg>
       Poster
+    </a>
+    <a class="btn btn-secondary" href="https://www.youtube.com/watch?v=M7cinNiVvZs" target="_blank">
+      <!-- youtube play icon -->
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M23.5 6.2a3.01 3.01 0 0 0-2.12-2.13C19.54 3.6 12 3.6 12 3.6s-7.54 0-9.38.47A3.01 3.01 0 0 0 .5 6.2C0 8.05 0 12 0 12s0 3.95.5 5.8a3.01 3.01 0 0 0 2.12 2.13C4.46 20.4 12 20.4 12 20.4s7.54 0 9.38-.47a3.01 3.01 0 0 0 2.12-2.13C24 15.95 24 12 24 12s0-3.95-.5-5.8zM9.6 15.6V8.4l6.4 3.6-6.4 3.6z"/>
+      </svg>
+      Video
     </a>
   </div>
 </header>
@@ -550,9 +561,8 @@
       varying (LTV)</strong>, dynamical systam, which we emprically validate.
     </p>
 
-    <figure class="figure-panel">
-      <!-- Replace with: images/fig1_overview.png -->
-      <img src="images/fig1_larger_edit2.png" alt="A-LQR Method Overview" onerror="this.parentElement.style.display='none'" />
+    <figure class="figure-panel overview">
+      <img src="assets/fig1_larger_edit2.png" alt="A-LQR Method Overview" onerror="this.parentElement.style.display='none'" />
       <figcaption>
         <strong>Figure 1: Method overview.</strong> At each LLM layer k, A-LQR computes a
         steering intervention u<sub>k</sub> that minimizes the deviation between the semantic
@@ -605,7 +615,7 @@
 
     <div class="fig-row">
       <figure class="figure-panel" style="margin:0">
-        <img src="images/gemma2-2b-spectrum-tiled_1col_nolog.png" alt="Jacobian Spectra" onerror="this.parentElement.style.display='none'" />
+        <img src="assets/gemma2-2b-spectrum-tiled_1col_nolog.png" alt="Jacobian Spectra" onerror="this.parentElement.style.display='none'" />
         <figcaption>
           <strong>Jacobian spectra.</strong> Normalized singular values across Gemma-2-2B layers for
           random nominal trajectories — spectra are dominated by a few shared modes, supporting the
@@ -613,7 +623,7 @@
         </figcaption>
       </figure>
       <figure class="figure-panel" style="margin:0">
-        <img src="images/jac_align.png" alt="Jacobian Alignment" onerror="this.parentElement.style.display='none'" />
+        <img src="assets/jac_align.png" alt="Jacobian Alignment" onerror="this.parentElement.style.display='none'" />
         <figcaption>
           <strong>Jacobian alignment.</strong> Pairwise subspace similarity across 50 Jacobians in
           Gemma-2-2B at early, middle, and late layers. Lighter = stronger alignment. Random matrices
@@ -654,10 +664,11 @@
 
     <h3>Concept Steering: Qualitative Example</h3>
     <p>
-      The model is prompted with a neutral opener. Without steering, generation follows
-      unrelated topics. With A-LQR and concept 'Dog' at &lambda;&nbsp;=&nbsp;2,
-      the output naturally incorporates the target concept.
+      Models are prompted with "Once upon a time" and A-LQR is used to induce arbitrary concepts
+      (e.g., "Dog", "Cloud", "Love") from the OneSeC dataset. The LFS strength parameter &lambda;
+      provides smooth, fine-grained control over concept prevalence as measured by an LLM-as-a-judge.
     </p>
+
 
     <div class="tw-demo" id="tw-demo">
       <div class="tw-demo-header">
@@ -679,6 +690,15 @@
         Qualitative examples from Appendix&nbsp;A of the paper. Generations are real model outputs.
       </div>
     </div>
+
+    <figure class="figure-panel">
+      <img src="assets/combined_vertical_barplots_v2_labeled.png" alt="Concept Steering Results" onerror="this.parentElement.style.display='none'" />
+      <figcaption>
+        <strong>Figure: Concept prevalence vs. &lambda;.</strong> Proportion of 500 generations
+        exhibiting each target concept, scored by Llama-3.1-8B as judge. Scaling &lambda; achieves
+        monotone, fine-grained control across concepts and models.
+      </figcaption>
+    </figure>
 
     <h3>Toxicity Mitigation</h3>
     <p>
@@ -778,32 +798,54 @@
       </div>
     </div>
 
-    <h3>Concept Steering</h3>
+    <!-- <h3>Concept Steering</h3>
     <p>
       Models are prompted with "Once upon a time" and A-LQR is used to induce arbitrary concepts
       (e.g., "Dog", "Cloud", "Love") from the OneSeC dataset. The LFS strength parameter &lambda;
       provides smooth, fine-grained control over concept prevalence as measured by an LLM-as-a-judge.
-    </p>
+    </p> -->
 
-    <figure class="figure-panel">
+    <!-- <figure class="figure-panel">
       <img src="images/combined_vertical_barplots_v2_labeled.png" alt="Concept Steering Results" onerror="this.parentElement.style.display='none'" />
       <figcaption>
         <strong>Figure: Concept prevalence vs. &lambda;.</strong> Proportion of 500 generations
         exhibiting each target concept, scored by Llama-3.1-8B as judge. Scaling &lambda; achieves
         monotone, fine-grained control across concepts and models.
       </figcaption>
-    </figure>
+    </figure> -->
 
     <h3>Jailbreaking</h3>
     <p>
-      We also evaluate A-LQR in the inverse task of overriding model refusal behavior. A variant,
-      <strong>A-LQR+</strong>, which intervenes on all token positions (not just the last), achieves
-      a 76.9% attack success rate on Gemma-2-9B-Instruct versus 12.5% for the best baseline (AAS),
-      while causing zero refusals — demonstrating bidirectional control of model behavior.
+      We also evaluate A-LQR in the inverse task of overriding model refusal behavior — demonstrating
+      that A-LQR provides <em>bidirectional</em> control. A variant,
+      <strong>A-LQR+</strong>, intervenes across all token positions rather than just the last,
+      which is necessary to override the full compliance representation. Results on Qwen2.5-14B-Instruct
+      below; full multi-model results appear in the paper.
     </p>
+
+    <div class="result-card" style="max-width:480px">
+      <div class="card-header">Jailbreaking — Qwen2.5-14B-Instruct</div>
+      <div class="card-body">
+        <table>
+          <thead>
+            <tr><th>Method</th><th>ASR&nbsp;↑</th><th>Refusal&nbsp;↓</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="metric-name">Original</td><td>1.9%</td><td>97.1%</td></tr>
+            <tr><td class="metric-name">AAS</td><td>77.9%</td><td>0%</td></tr>
+            <tr><td class="metric-name">S-PID</td><td>65.4%</td><td>0%</td></tr>
+            <tr><td class="metric-name">A-LQR</td><td>69.2%</td><td>0%</td></tr>
+            <tr class="highlight-row"><td>A-LQR+</td><td class="best">97.1%</td><td>0%</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.78rem;color:var(--muted);margin-top:0.6rem;margin-bottom:0">
+          ASR = Attack Success Rate. A-LQR+ intervenes on all token positions.
+        </p>
+      </div>
+    </div>
   </section>
 
-  <!-- POSTER -->
+  <!-- POSTER
   <section id="poster">
     <h2>Poster</h2>
     <div class="poster-link-section">
@@ -814,10 +856,10 @@
       </div>
       <div>
         <h3>ICML 2026 Poster</h3>
-        <p>The full poster is available as a PDF. <a href="poster_main.pdf" target="_blank">Download poster (PDF)</a></p>
+        <p>The full poster is available as a PDF. <a href="assets/_ICML_2026__A_LQR_Poster.pdf" target="_blank">Download poster (PDF)</a></p>
       </div>
     </div>
-  </section>
+  </section> -->
 
   <!-- CITATION -->
   <section id="citation">
